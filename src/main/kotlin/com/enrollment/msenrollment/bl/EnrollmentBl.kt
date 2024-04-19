@@ -5,6 +5,7 @@ import com.enrollment.msenrollment.entity.Enrollment
 import com.enrollment.msenrollment.entity.File
 import com.enrollment.msenrollment.entity.Proposal
 import com.enrollment.msenrollment.entity.StudentRequirement
+import com.enrollment.msenrollment.service.EmailService
 import com.enrollment.msenrollment.service.FileService
 import com.files.msfiles.dto.FileDto
 import com.files.msfiles.dto.ProposalDto
@@ -20,7 +21,8 @@ class EnrollmentBl constructor(
         private var proposalRepository: ProposalRepository,
         private var personRepository: PersonRepository,
         private var fileRepository: FileRepository,
-        private var requirementRepository: StudentRequirementRepository
+        private var requirementRepository: StudentRequirementRepository,
+        private var emailService: EmailService
 ){
 
     companion object{
@@ -49,16 +51,24 @@ class EnrollmentBl constructor(
 
         for (req in files){
             logger.info("Requisito: ${req.fileName}")
-//            val requirement = StudentRequirement(
-//                    enrollmentId = enrollmentAux,
-//                    fileId = fileRepository.findById(req.fileId!!).get(),
-//                    personId = personId,
-//                    requirementName = "Requisito")
-//
-//            requirementRepository.save(requirement)
+            val requirement = StudentRequirement(
+                    enrollmentId = enrollmentAux,
+                    fileId = fileRepository.findById(req.fileId!!).get(),
+                    personId = personId,
+                    requirementName = "Requisito")
+
+            requirementRepository.save(requirement)
         }
 
+        sendEmail("proposal", proposalDto.personKcUuid)
 
+
+
+
+    }
+
+    fun sendEmail(type: String, userKcUUid: String){
+        emailService.sendEmail(userKcUUid, type)
     }
 
 
