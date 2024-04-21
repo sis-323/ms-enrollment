@@ -17,11 +17,6 @@ class FeignSupportConfig {
 
     @Bean
     fun multipartFormEncoder(): Encoder {
-        return SpringFormEncoder(SpringEncoder(object : ObjectFactory<HttpMessageConverters> {
-            @Throws(BeansException::class)
-            override fun getObject(): HttpMessageConverters {
-                return HttpMessageConverters(RestTemplate().messageConverters)
-            }
-        }))
+        return SpringFormEncoder(SpringEncoder { HttpMessageConverters(RestTemplate().messageConverters) })
     }
 }

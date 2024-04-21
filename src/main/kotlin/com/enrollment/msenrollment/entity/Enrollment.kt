@@ -7,7 +7,9 @@ import java.util.*
 
 @Entity
 @Table(name = "inscripcion")
-class Enrollment {
+class Enrollment(studentId: Person, proposalId: Proposal, @Column(name = "fecha_propuesta")
+var enrollmentDate: Date, @Column(name = "semestre") var semester: String, @Column(name = "estado_propuest")
+var proposalStatus: String) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_inscripcion")
@@ -15,32 +17,13 @@ class Enrollment {
 
     @ManyToOne
     @JoinColumn(name = "id_persona")
-    var studentId: Person?
+    var studentId: Person? = studentId
 
     @ManyToOne
     @JoinColumn(name = "id_propuesta")
-    var proposalId: Proposal?
+    var proposalId: Proposal? = proposalId
 
     @Column(name = "estado")
     var status: Boolean = true
-
-    @Column(name = "fecha_propuesta")
-    var enrollmentDate: Date = Date()
-
-    @Column(name = "semestre")
-    var semester: String = ""
-
-
-    constructor(
-            studentId: Person,
-            proposalId: Proposal,
-            enrollmentDate: Date,
-            semester: String
-    ) {
-        this.studentId = studentId
-        this.proposalId = proposalId
-        this.enrollmentDate = enrollmentDate
-        this.semester = semester
-    }
 
 }

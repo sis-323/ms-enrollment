@@ -1,4 +1,4 @@
-package com.files.msfiles.dto
+package com.enrollment.msenrollment.dto
 
 data class EnrollmentDto (
     val personKcUuid: String,

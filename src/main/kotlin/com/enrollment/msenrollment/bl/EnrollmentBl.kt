@@ -13,6 +13,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.time.LocalDate
 import java.util.Date
 
 @Service
@@ -41,11 +42,16 @@ class EnrollmentBl constructor(
         )
 
         val proposal =  proposalRepository.save(proposalEntity)
+        val localDate = LocalDate.now()
+
         val enrollment = Enrollment(
                 studentId = personId,
                 proposalId = proposal,
                 enrollmentDate = Date(),
-                semester = "2024-1"
+                semester = getSemester(localDate),
+                proposalStatus = "Pendiente"
+
+
         )
         val enrollmentAux = enrollmentRepository.save(enrollment)
 
@@ -55,15 +61,14 @@ class EnrollmentBl constructor(
                     enrollmentId = enrollmentAux,
                     fileId = fileRepository.findById(req.fileId!!).get(),
                     personId = personId,
-                    requirementName = "Requisito")
+                    requirementName = "Requisito",
+
+                    )
+
 
             requirementRepository.save(requirement)
         }
-
         sendEmail("proposal", proposalDto.personKcUuid)
-
-
-
 
     }
 
@@ -71,7 +76,12 @@ class EnrollmentBl constructor(
         emailService.sendEmail(userKcUUid, type)
     }
 
-
+    private fun getSemester(currentDate: LocalDate): String =
+            when (currentDate.monthValue) {
+                in 2..6 -> "I-${currentDate.year}"
+                in 8..11 -> "II-${currentDate.year}"
+                else -> throw IllegalArgumentException("Invalid month for semester determination")
+            }
 
 
 }
