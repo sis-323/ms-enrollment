@@ -8,7 +8,7 @@ import java.time.LocalDate
 class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_proyecto")
+    @Column(name = "id_proyecto_final")
     var projectId: Long? = null
 
     @Column(name = "titulo")
@@ -30,6 +30,17 @@ class Project {
     @JoinColumn(name = "id_asignacion")
     var assignationId: Assignation? = null
 
+    constructor(
+
+        name: String,
+        description: String,
+        assignationId: Assignation,
+
+        ){
+        this.name = name
+        this.description = description
+        this.assignationId = assignationId
+        }
 
 
 
