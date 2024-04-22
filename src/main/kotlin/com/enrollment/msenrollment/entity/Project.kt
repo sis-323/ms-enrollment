@@ -5,17 +5,17 @@ import java.time.LocalDate
 
 @Entity
 @Table(name = "proyectos_finales")
-class Project {
+class Project(
+    @Column(name = "titulo") var name: String,
+    @Column(name = "resumen") var description: String,
+    assignationId: Assignation
+) {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_proyecto_final")
     var projectId: Long? = null
-
-    @Column(name = "titulo")
-    var name: String = ""
-
-    @Column(name = "resumen")
-    var description: String = ""
 
     @Column(name = "estado")
     var status: Boolean = true
@@ -28,26 +28,7 @@ class Project {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_asignacion")
-    var assignationId: Assignation? = null
-
-    constructor(
-
-        name: String,
-        description: String,
-        assignationId: Assignation,
-
-        ){
-        this.name = name
-        this.description = description
-        this.assignationId = assignationId
-        }
-
-
-
-
-
-
-
+    var assignationId: Assignation? = assignationId
 
 
 }

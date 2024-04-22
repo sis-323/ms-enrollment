@@ -44,6 +44,10 @@ class ProjectBl
         logger.info("Rejecting proposal: $proposalId")
         val proposal = proposalRepository.findById(proposalId).get()
         val enrollment = enrollmentRepository.findByProposalId(proposal)
+
+        proposal.status = false
+        proposalRepository.save(proposal)
+
         enrollment.proposalStatus = "Rechazado"
         enrollmentRepository.save(enrollment)
     }

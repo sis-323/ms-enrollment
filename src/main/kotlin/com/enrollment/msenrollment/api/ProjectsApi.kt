@@ -21,4 +21,9 @@ class ProjectsApi (
         return ResponseEntity.ok(ResponseDto(null, "Proposal approved", true))
     }
 
+    @PutMapping("/{proposalId}/reject")
+    fun rejectProposal( @PathVariable proposalId: Long): ResponseEntity<ResponseDto<String>> {
+        projectBl.rejectProposal(proposalId)
+        return ResponseEntity.ok(ResponseDto(null, "Proposal rejected", true))
+    }
 }
