@@ -4,6 +4,7 @@ import com.enrollment.msenrollment.dao.AssignationRepository
 import com.enrollment.msenrollment.dao.EnrollmentRepository
 import com.enrollment.msenrollment.dao.ProjectRepository
 import com.enrollment.msenrollment.dao.ProposalRepository
+import com.enrollment.msenrollment.dto.ProposalOutDto
 import com.enrollment.msenrollment.entity.Project
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -50,6 +51,20 @@ class ProjectBl
 
         enrollment.proposalStatus = "Rechazado"
         enrollmentRepository.save(enrollment)
+    }
+
+    fun findProposals():List<ProposalOutDto>{
+        val proposals = proposalRepository.findAll()
+        val enrollments = enrollmentRepository.findAll()
+        return proposals.map {
+            ProposalOutDto(
+                proposalId = it.proposalId!!,
+                title = it.description!!,
+                uploadedBy = it.person!!.name!!,
+                proposalStatus = enrollments.find { enrollment -> enrollment.proposalId == it }!!.proposalStatus!!,
+                fileUrl = "sss"
+            )
+        }
     }
 
 }

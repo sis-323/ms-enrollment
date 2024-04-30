@@ -26,4 +26,6 @@ class ProjectsApi (
         projectBl.rejectProposal(proposalId)
         return ResponseEntity.ok(ResponseDto(null, "Proposal rejected", true))
     }
+
+
 }
