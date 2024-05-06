@@ -1,8 +1,12 @@
 package com.enrollment.msenrollment.api
 
 import com.enrollment.msenrollment.bl.ProjectBl
+import com.enrollment.msenrollment.dto.ModalityDto
+import com.enrollment.msenrollment.dto.ProposalOutDto
 import com.files.msfiles.dto.ResponseDto
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/projects")
+@CrossOrigin(origins = ["*"])
 class ProjectsApi (
         private val projectBl: ProjectBl
 ){
@@ -27,5 +32,17 @@ class ProjectsApi (
         return ResponseEntity.ok(ResponseDto(null, "Proposal rejected", true))
     }
 
+    @GetMapping("/proposals")
+    fun getProposals(): ResponseEntity<ResponseDto<List<ProposalOutDto>>> {
+        val proposals = projectBl.findProposals()
+        return ResponseEntity.ok(ResponseDto(proposals, "Proposals retrieved", true))
+
+    }
+
+    @GetMapping("/modalities")
+    fun getModalities(): ResponseEntity<ResponseDto<List<ModalityDto>>> {
+        val modalities = projectBl.findModalities()
+        return ResponseEntity.ok(ResponseDto(modalities, "Modalities retrieved", true))
+    }
 
 }
