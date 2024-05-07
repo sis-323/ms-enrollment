@@ -5,5 +5,7 @@ data class ProposalOutDto(
     val title: String,
     val uploadedBy: String,
     val proposalStatus: String,
-    val fileUrl: String
+    val fileUrl: String,
+    val uploadedDate: String,
+    val studentKcId: String
 )

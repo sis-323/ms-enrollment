@@ -2,7 +2,9 @@ package com.enrollment.msenrollment.bl
 
 import com.enrollment.msenrollment.dao.*
 import com.enrollment.msenrollment.dto.ModalityDto
+import com.enrollment.msenrollment.dto.ProposalDetailDto
 import com.enrollment.msenrollment.dto.ProposalOutDto
+import com.enrollment.msenrollment.dto.RequirementDto
 import com.enrollment.msenrollment.entity.Project
 import com.enrollment.msenrollment.service.FileService
 import org.slf4j.LoggerFactory
@@ -17,7 +19,8 @@ class ProjectBl(
     @Autowired private val enrollmentRepository: EnrollmentRepository,
     private val fileService: FileService,
     @Autowired private val fileRepository: FileRepository,
-    @Autowired private val modalityRepository: ModalityRepository
+    @Autowired private val modalityRepository: ModalityRepository,
+    @Autowired private val requirementRepository: RequirementRepository
 ) {
 
     companion object{
@@ -63,13 +66,61 @@ class ProjectBl(
             ProposalOutDto(
                 proposalId = it.proposalId!!,
                 title = it.description!!,
-                uploadedBy = it.person!!.name!!,
+                uploadedBy = it.person!!.name + " " + it.person!!.lastName,
                 proposalStatus = enrollments.find { enrollment -> enrollment.proposalId == it }!!.proposalStatus!!,
                 fileUrl = fileService.getFileUrl(
                     fileRepository.findById(it.fileId!!.fileId!!).get().fileName!!,
+                ).body!!.data!!,
+                uploadedDate = enrollments.find
+                { enrollment -> enrollment.proposalId == it }!!.enrollmentDate.toString(),
+                studentKcId = it.person!!.idKc
+            )
+        }
+    }
+
+    fun findProposalByStudentKcId(studentKcId: String): ProposalOutDto {
+        val proposal = proposalRepository.findByPersonIdKc(studentKcId)
+        val enrollment = enrollmentRepository.findByProposalId(proposal)
+        return ProposalOutDto(
+            proposalId = proposal.proposalId!!,
+            title = proposal.description!!,
+            uploadedBy = proposal.person!!.name,
+            proposalStatus = enrollment.proposalStatus,
+            fileUrl = fileService.getFileUrl(
+                fileRepository.findById(proposal.fileId!!.fileId!!).get().fileName!!,
+            ).body!!.data!!,
+            uploadedDate = enrollment.enrollmentDate.toString(),
+            studentKcId = proposal.person!!.idKc
+
+        )
+    }
+
+    fun findProposalDetailByStudentKcId(studentKcId: String): ProposalDetailDto {
+        val proposal = proposalRepository.findByPersonIdKc(studentKcId)
+        val enrollment = enrollmentRepository.findByProposalId(proposal)
+        val user = proposal.person ?: throw IllegalStateException("Person associated with proposal is null")
+
+        val requirements = requirementRepository.findRequirementsByPerson(user).map { requirement ->
+            RequirementDto(
+                requirementName = requirement.requirementName ?: throw IllegalStateException("Requirement name is null"),
+                requirementLink = fileService.getFileUrl(
+                    fileRepository.findById(requirement.file?.fileId ?: throw IllegalStateException("File ID is null")).get().fileName!!
                 ).body!!.data!!
             )
         }
+
+        val proposalFile = fileService.getFileUrl(
+            fileRepository.findById(proposal.fileId?.fileId ?: throw IllegalStateException("Proposal file ID is null")).get().fileName!!
+        ).body!!.data!!
+
+        return ProposalDetailDto(
+            email = user.email,
+            fullName = "${user.name} ${user.lastName}",
+            requirements = requirements,
+            proposalFile = proposalFile,
+            proposalStatus = enrollment.proposalStatus,
+            proposalFileName = proposal.description!!
+        )
     }
 
     fun findModalities(): List<ModalityDto> {

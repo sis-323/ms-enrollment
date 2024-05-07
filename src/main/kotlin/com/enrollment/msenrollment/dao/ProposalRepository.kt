@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ProposalRepository : JpaRepository<Proposal, Long>{
 
+    fun findByPersonIdKc(studentKcId: String): Proposal
 }

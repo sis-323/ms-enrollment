@@ -2,6 +2,7 @@ package com.enrollment.msenrollment.api
 
 import com.enrollment.msenrollment.bl.ProjectBl
 import com.enrollment.msenrollment.dto.ModalityDto
+import com.enrollment.msenrollment.dto.ProposalDetailDto
 import com.enrollment.msenrollment.dto.ProposalOutDto
 import com.files.msfiles.dto.ResponseDto
 import org.springframework.http.ResponseEntity
@@ -39,10 +40,24 @@ class ProjectsApi (
 
     }
 
+    @GetMapping("/proposals/{studentKcId}")
+    fun getProposalByStudentKcId(@PathVariable studentKcId: String): ResponseEntity<ResponseDto<ProposalOutDto>> {
+        val proposal = projectBl.findProposalByStudentKcId(studentKcId)
+        return ResponseEntity.ok(ResponseDto(proposal, "Proposal retrieved", true))
+    }
+
+    @GetMapping("/proposals/{studentKcId}/details")
+    fun getProposalDetailByStudentKcId(@PathVariable studentKcId: String):
+            ResponseEntity<ResponseDto<ProposalDetailDto>> {
+        val proposal = projectBl.findProposalDetailByStudentKcId(studentKcId)
+        return ResponseEntity.ok(ResponseDto(proposal, "Proposal retrieved", true))
+    }
+
     @GetMapping("/modalities")
     fun getModalities(): ResponseEntity<ResponseDto<List<ModalityDto>>> {
         val modalities = projectBl.findModalities()
         return ResponseEntity.ok(ResponseDto(modalities, "Modalities retrieved", true))
     }
+
 
 }
