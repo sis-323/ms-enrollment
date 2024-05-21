@@ -17,4 +17,6 @@ interface AssignationRepository : JpaRepository<Assignation, Long> {
     fun existsByStudentId(studentId: Person): Boolean
 
     fun findByStudentIdAndRelatorId(studentId: Person, relatorId: Person): Assignation
+
+
 }
