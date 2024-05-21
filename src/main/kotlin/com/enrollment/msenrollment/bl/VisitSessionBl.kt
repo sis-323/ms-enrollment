@@ -1,5 +1,7 @@
 package com.enrollment.msenrollment.bl
 
+import com.enrollment.msenrollment.dao.AssignationRepository
+import com.enrollment.msenrollment.dao.PersonRepository
 import com.enrollment.msenrollment.dao.VisitSessionRepository
 import com.enrollment.msenrollment.dto.VisitSessionDto
 import com.enrollment.msenrollment.entity.Assignation
@@ -12,7 +14,9 @@ import java.util.*
 @Service
 class VisitSessionBl constructor(
     @Autowired private val assignationBl: AssignationBl,
-    @Autowired private val visitSessionRepository: VisitSessionRepository
+    @Autowired private val visitSessionRepository: VisitSessionRepository,
+    @Autowired private val assignationRepository: AssignationRepository,
+    @Autowired private val userRepository: PersonRepository
 ){
 
     companion object {
@@ -43,6 +47,32 @@ class VisitSessionBl constructor(
 
 
 
+    }
+
+    fun findSessionsByTutorId(tutorKcId: String): List<VisitSessionDto>{
+        logger.info("Finding sessions by tutor kc id: $tutorKcId")
+        val sessions = visitSessionRepository.findAllByAssignationTutorIdIdKc(tutorKcId)
+        val sessionsDto = mutableListOf<VisitSessionDto>()
+        sessions.forEach {
+            sessionsDto.add(VisitSessionDto(
+                visitSessionId = it.id!!,
+                visitDate = SimpleDateFormat("yyyy-MM-dd").format(it.date),
+                observation = it.observation,
+                didStudentAttend = it.studentAssisted,
+            ))
+        }
+        return sessionsDto
+    }
+
+    fun findSessionById(sessionId: Long): VisitSessionDto {
+        logger.info("Finding session by id: $sessionId")
+        val session = visitSessionRepository.findById(sessionId).get()
+        return VisitSessionDto(
+            visitSessionId = session.id!!,
+            visitDate = SimpleDateFormat("yyyy-MM-dd").format(session.date),
+            observation = session.observation,
+            didStudentAttend = session.studentAssisted,
+        )
     }
 
     private fun toDate(date: String): Date {

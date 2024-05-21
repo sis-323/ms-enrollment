@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface VisitSessionRepository : JpaRepository<VisitSession, Long> {
+
+    fun findAllByAssignationTutorIdIdKc(tutorId: String): List<VisitSession>
 }
