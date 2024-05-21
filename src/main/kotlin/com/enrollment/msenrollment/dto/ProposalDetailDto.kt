@@ -1,6 +1,7 @@
 package com.enrollment.msenrollment.dto
 
 data class ProposalDetailDto (
+    val proposalId: Long,
     val email: String,
     val fullName: String,
     val requirements: List<RequirementDto>,

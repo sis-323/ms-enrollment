@@ -5,5 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface DeliverableRepository : JpaRepository<Deliverable, Long> {
+interface DeliverableRepository : JpaRepository<Deliverable, Long>{
+
+    fun findByDeliverableId(deliverableId: Long): Deliverable
 }

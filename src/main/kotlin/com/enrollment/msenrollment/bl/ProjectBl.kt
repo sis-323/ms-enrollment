@@ -114,6 +114,7 @@ class ProjectBl(
         ).body!!.data!!
 
         return ProposalDetailDto(
+            proposalId = proposal.proposalId!!,
             email = user.email,
             fullName = "${user.name} ${user.lastName}",
             requirements = requirements,
