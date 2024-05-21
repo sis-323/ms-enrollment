@@ -46,7 +46,7 @@ class VisitSessionBl constructor(
     }
 
     private fun toDate(date: String): Date {
-        return SimpleDateFormat("yyyy/MM/dd").parse(date)
+        return SimpleDateFormat("yyyy-MM-dd").parse(date)
     }
 
 }
