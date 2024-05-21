@@ -74,6 +74,13 @@ class VisitSessionBl constructor(
             didStudentAttend = session.studentAssisted,
         )
     }
+    fun updateSession(visitSessionDto: VisitSessionDto, sessionId: Long) {
+        logger.info("Updating session with id: $sessionId")
+        val session = visitSessionRepository.findById(sessionId).get()
+        session.observation = visitSessionDto.observation
+        session.studentAssisted = visitSessionDto.didStudentAttend
+        visitSessionRepository.save(session)
+    }
 
     private fun toDate(date: String): Date {
         return SimpleDateFormat("yyyy-MM-dd").parse(date)

@@ -38,4 +38,14 @@ class SessionApi (
     }
 
     @PutMapping("/{sessionId}")
+    fun updateSession(@PathVariable("sessionId") sessionId: Long,
+        @RequestBody visitSessionDto: VisitSessionDto): ResponseEntity<ResponseDto<String>> {
+        try {
+            visitSessionBl.updateSession(visitSessionDto,sessionId )
+            return ResponseEntity.ok(ResponseDto(null, "Session updated", true))
+        }
+        catch (e: Exception) {
+            return ResponseEntity.internalServerError().body(ResponseDto(null, e.message!!, false))
+        }
+    }
 }
