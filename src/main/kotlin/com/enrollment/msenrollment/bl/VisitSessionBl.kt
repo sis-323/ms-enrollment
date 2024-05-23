@@ -6,6 +6,7 @@ import com.enrollment.msenrollment.dao.VisitSessionRepository
 import com.enrollment.msenrollment.dto.VisitSessionDto
 import com.enrollment.msenrollment.entity.Assignation
 import com.enrollment.msenrollment.entity.VisitSession
+import com.enrollment.msenrollment.enums.VisitSessionEnum
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.text.SimpleDateFormat
@@ -49,17 +50,66 @@ class VisitSessionBl constructor(
 
     }
 
-    fun findSessionsByTutorId(tutorKcId: String): List<VisitSessionDto>{
+    fun findSessionsByTutorId(tutorKcId: String, attendance: String): List<VisitSessionDto>{
         logger.info("Finding sessions by tutor kc id: $tutorKcId")
-        val sessions = visitSessionRepository.findAllByAssignationTutorIdIdKc(tutorKcId)
+
         val sessionsDto = mutableListOf<VisitSessionDto>()
-        sessions.forEach {
-            sessionsDto.add(VisitSessionDto(
-                visitSessionId = it.id!!,
-                visitDate = SimpleDateFormat("yyyy-MM-dd").format(it.date),
-                observation = it.observation,
-                didStudentAttend = it.studentAssisted,
-            ))
+        val didStudentAttend = when(attendance){
+            "attended" -> VisitSessionEnum.ATTENDED
+            "not-attended" -> VisitSessionEnum.NOT_ATTENDED
+            "pending" -> VisitSessionEnum.PENDING
+            else -> VisitSessionEnum.ALL
+        }
+        if(didStudentAttend == VisitSessionEnum.ALL){
+            val sessions = visitSessionRepository.findAllByAssignationTutorIdIdKc(tutorKcId)
+            sessions.forEach {
+                sessionsDto.add(VisitSessionDto(
+                    visitSessionId = it.id!!,
+                    visitDate = SimpleDateFormat("yyyy-MM-dd").format(it.date),
+                    observation = it.observation,
+                    didStudentAttend = it.studentAssisted,
+                ))
+            }
+        }
+
+        if(didStudentAttend == VisitSessionEnum.ATTENDED){
+            val sessions = visitSessionRepository.findAllByAssignationTutorIdIdKc(tutorKcId)
+            sessions.forEach {
+                if(it.studentAssisted == true){
+                    sessionsDto.add(VisitSessionDto(
+                        visitSessionId = it.id!!,
+                        visitDate = SimpleDateFormat("yyyy-MM-dd").format(it.date),
+                        observation = it.observation,
+                        didStudentAttend = it.studentAssisted,
+                    ))
+                }
+            }
+        }
+        if(didStudentAttend == VisitSessionEnum.NOT_ATTENDED){
+            val sessions = visitSessionRepository.findAllByAssignationTutorIdIdKc(tutorKcId)
+            sessions.forEach {
+                if(it.studentAssisted == false){
+                    sessionsDto.add(VisitSessionDto(
+                        visitSessionId = it.id!!,
+                        visitDate = SimpleDateFormat("yyyy-MM-dd").format(it.date),
+                        observation = it.observation,
+                        didStudentAttend = it.studentAssisted,
+                    ))
+                }
+            }
+        }
+        if(didStudentAttend == VisitSessionEnum.PENDING){
+            val sessions = visitSessionRepository.findAllByAssignationTutorIdIdKc(tutorKcId)
+            sessions.forEach {
+                if(it.studentAssisted == null){
+                    sessionsDto.add(VisitSessionDto(
+                        visitSessionId = it.id!!,
+                        visitDate = SimpleDateFormat("yyyy-MM-dd").format(it.date),
+                        observation = it.observation,
+                        didStudentAttend = it.studentAssisted,
+                    ))
+                }
+            }
         }
         return sessionsDto
     }

@@ -27,10 +27,14 @@ class SessionApi (
     }
 
     @GetMapping("/tutor/")
-    fun getTutorSessions(@RequestParam("tutorKcId") tutorKcId: String): ResponseEntity<ResponseDto<List<VisitSessionDto>>> {
-        val tutorSessions = visitSessionBl.findSessionsByTutorId(tutorKcId)
+    fun getTutorSessions(
+        @RequestParam("tutorKcId") tutorKcId: String,
+        @RequestParam("attendance", required = false) attendance: String? = ""
+    ): ResponseEntity<ResponseDto<List<VisitSessionDto>>> {
+        val tutorSessions = visitSessionBl.findSessionsByTutorId(tutorKcId, attendance!!)
         return ResponseEntity.ok(ResponseDto(tutorSessions, "Tutor sessions found", true))
     }
+
     @GetMapping("/{sessionId}")
     fun getSession(@PathVariable("sessionId") sessionId: Long): ResponseEntity<ResponseDto<VisitSessionDto>> {
         val session = visitSessionBl.findSessionById(sessionId)
