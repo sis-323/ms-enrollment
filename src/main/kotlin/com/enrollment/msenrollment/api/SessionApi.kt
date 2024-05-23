@@ -29,9 +29,15 @@ class SessionApi (
     @GetMapping("/tutor/")
     fun getTutorSessions(
         @RequestParam("tutorKcId") tutorKcId: String,
-        @RequestParam("attendance", required = false) attendance: String? = ""
+        @RequestParam("attendance", required = false, defaultValue = "all") attendance: String? = ""
     ): ResponseEntity<ResponseDto<List<VisitSessionDto>>> {
-        val tutorSessions = visitSessionBl.findSessionsByTutorId(tutorKcId, attendance!!)
+        if (attendance != "attended" && attendance != "not-attended" && attendance != "pending" && attendance != "all") {
+            return ResponseEntity.badRequest().body(ResponseDto(null, "Invalid attendance filter", false))
+        }
+        val tutorSessions = visitSessionBl.findSessionsByTutorId(tutorKcId, attendance)
+        if (tutorSessions.isEmpty()) {
+            return ResponseEntity.ok(ResponseDto(tutorSessions, "No sessions found", true))
+        }
         return ResponseEntity.ok(ResponseDto(tutorSessions, "Tutor sessions found", true))
     }
 
