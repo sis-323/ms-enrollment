@@ -82,6 +82,14 @@ class VisitSessionBl constructor(
         visitSessionRepository.save(session)
     }
 
+    fun deleteSession(sessionId: Long) {
+        logger.info("Deleting session with id: $sessionId")
+        val session = visitSessionRepository.findById(sessionId).get()
+        session.status = false
+        visitSessionRepository.save(session)
+        logger.info("Session deleted successfully")
+    }
+
     private fun toDate(date: String): Date {
         return SimpleDateFormat("yyyy-MM-dd").parse(date)
     }

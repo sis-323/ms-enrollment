@@ -48,4 +48,15 @@ class SessionApi (
             return ResponseEntity.internalServerError().body(ResponseDto(null, e.message!!, false))
         }
     }
+
+    @DeleteMapping("/{sessionId}")
+    fun deleteSession(@PathVariable("sessionId") sessionId: Long): ResponseEntity<ResponseDto<String>> {
+        try {
+            visitSessionBl.deleteSession(sessionId)
+            return ResponseEntity.ok(ResponseDto(null, "Session deleted", true))
+        }
+        catch (e: Exception) {
+            return ResponseEntity.internalServerError().body(ResponseDto(null, e.message!!, false))
+        }
+    }
 }
