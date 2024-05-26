@@ -2,17 +2,14 @@ package com.enrollment.msenrollment.bl
 
 import com.enrollment.msenrollment.dao.*
 import com.enrollment.msenrollment.entity.Enrollment
-import com.enrollment.msenrollment.entity.File
 import com.enrollment.msenrollment.entity.Proposal
 import com.enrollment.msenrollment.entity.StudentRequirement
 import com.enrollment.msenrollment.service.EmailService
-import com.enrollment.msenrollment.service.FileService
 import com.files.msfiles.dto.FileDto
 import com.files.msfiles.dto.ProposalDto
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
 import java.util.Date
 
@@ -54,7 +51,8 @@ class EnrollmentBl constructor(
                 proposalId = proposal,
                 enrollmentDate = Date(),
                 semester = getSemester(localDate),
-                proposalStatus = "Pendiente"
+                proposalStatus = "Pendiente",
+            observation = null
 
 
         )

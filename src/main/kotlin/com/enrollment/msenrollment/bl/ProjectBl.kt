@@ -1,15 +1,14 @@
 package com.enrollment.msenrollment.bl
 
 import com.enrollment.msenrollment.dao.*
-import com.enrollment.msenrollment.dto.ModalityDto
-import com.enrollment.msenrollment.dto.ProposalDetailDto
-import com.enrollment.msenrollment.dto.ProposalOutDto
-import com.enrollment.msenrollment.dto.RequirementDto
+import com.enrollment.msenrollment.dto.*
+import com.enrollment.msenrollment.entity.Observation
 import com.enrollment.msenrollment.entity.Project
 import com.enrollment.msenrollment.service.FileService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class ProjectBl(
@@ -20,7 +19,8 @@ class ProjectBl(
     private val fileService: FileService,
     @Autowired private val fileRepository: FileRepository,
     @Autowired private val modalityRepository: ModalityRepository,
-    @Autowired private val requirementRepository: RequirementRepository
+    @Autowired private val requirementRepository: RequirementRepository,
+    @Autowired private val observationRepository: ObservationRepository
 ) {
 
     companion object{
@@ -57,6 +57,22 @@ class ProjectBl(
         enrollment.proposalStatus = "Rechazado"
         enrollmentRepository.save(enrollment)
     }
+
+    fun reviewProposal(studentKcId: String, proposalId: Long, observationDto: ObservationDto) {
+        logger.info("Observing proposal: $proposalId for student: $studentKcId")
+        val proposal = proposalRepository.findByPersonIdKcAndProposalId(studentKcId, proposalId)
+        val enrollment = enrollmentRepository.findByProposalId(proposal)
+        val observation = Observation(
+            description = observationDto.description,
+            date = Date(),
+        )
+        val savedObservation = observationRepository.save(observation)
+        enrollment.observation = savedObservation
+        enrollment.proposalStatus = "Observado"
+        enrollmentRepository.save(enrollment)
+
+    }
+
 
     fun findProposals():List<ProposalOutDto>{
         val proposals = proposalRepository.findAll()
