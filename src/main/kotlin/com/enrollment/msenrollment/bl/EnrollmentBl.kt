@@ -31,6 +31,10 @@ class EnrollmentBl constructor(
     }
 
     fun saveEnrollment(file: FileDto, proposalDto: ProposalDto, files: List<FileDto>) {
+        val proposalExists = proposalRepository.existsByPersonIdKc(proposalDto.personKcUuid)
+        logger.info("proposal exists: $proposalExists")
+
+
         logger.info("proposal name: ${proposalDto.title}")
         val personId = personRepository.findByIdKc(proposalDto.personKcUuid)
         val fileEntity = fileRepository.findById(file.fileId!!).get()

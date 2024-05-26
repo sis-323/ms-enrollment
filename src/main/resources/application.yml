@@ -6,7 +6,7 @@ spring:
   application:
     name: ms-enrollment
   datasource:
-    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/sis-323-test}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5433/sis-323}
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:admin}
     jpa:

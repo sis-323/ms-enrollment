@@ -78,39 +78,45 @@ class ProjectBl(
         }
     }
 
-    fun findProposalByStudentKcId(studentKcId: String): ProposalOutDto {
-        val proposal = proposalRepository.findByPersonIdKc(studentKcId)
-        val enrollment = enrollmentRepository.findByProposalId(proposal)
-        return ProposalOutDto(
-            proposalId = proposal.proposalId!!,
-            title = proposal.description!!,
-            uploadedBy = proposal.person!!.name,
-            proposalStatus = enrollment.proposalStatus,
-            fileUrl = fileService.getFileUrl(
-                fileRepository.findById(proposal.fileId!!.fileId!!).get().fileName!!,
-            ).body!!.data!!,
-            uploadedDate = enrollment.enrollmentDate.toString(),
-            studentKcId = proposal.person!!.idKc
+    fun findProposalByStudentKcId(studentKcId: String): List<ProposalOutDto> {
+        val proposal = proposalRepository.findAllByPersonIdKc(studentKcId)
+        return proposal.map {
+            val enrollment = enrollmentRepository.findByProposalId(it)
 
-        )
+            ProposalOutDto(
+                proposalId = it.proposalId!!,
+                title = it.description!!,
+                uploadedBy = it.person!!.name,
+                proposalStatus = enrollment.proposalStatus,
+                fileUrl = fileService.getFileUrl(
+                    fileRepository.findById(it.fileId!!.fileId!!).get().fileName!!,
+                ).body!!.data!!,
+                uploadedDate = enrollment.enrollmentDate.toString(),
+                studentKcId = it.person!!.idKc
+            )
+        }
+
     }
 
-    fun findProposalDetailByStudentKcId(studentKcId: String): ProposalDetailDto {
-        val proposal = proposalRepository.findByPersonIdKc(studentKcId)
+    fun findProposalDetailByStudentKcId(studentKcId: String, proposalId: Long): ProposalDetailDto {
+        val proposal = proposalRepository.findByPersonIdKcAndProposalId(studentKcId, proposalId)
         val enrollment = enrollmentRepository.findByProposalId(proposal)
         val user = proposal.person ?: throw IllegalStateException("Person associated with proposal is null")
 
         val requirements = requirementRepository.findRequirementsByPerson(user).map { requirement ->
             RequirementDto(
-                requirementName = requirement.requirementName ?: throw IllegalStateException("Requirement name is null"),
+                requirementName = requirement.requirementName ?:
+                throw IllegalStateException("Requirement name is null"),
                 requirementLink = fileService.getFileUrl(
-                    fileRepository.findById(requirement.file?.fileId ?: throw IllegalStateException("File ID is null")).get().fileName!!
+                    fileRepository.findById(requirement.file?.fileId ?:
+                    throw IllegalStateException("File ID is null")).get().fileName!!
                 ).body!!.data!!
             )
         }
 
         val proposalFile = fileService.getFileUrl(
-            fileRepository.findById(proposal.fileId?.fileId ?: throw IllegalStateException("Proposal file ID is null")).get().fileName!!
+            fileRepository.findById(proposal.fileId?.fileId ?:
+            throw IllegalStateException("Proposal file ID is null")).get().fileName!!
         ).body!!.data!!
 
         return ProposalDetailDto(

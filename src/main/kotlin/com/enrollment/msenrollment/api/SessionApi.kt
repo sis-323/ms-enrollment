@@ -26,15 +26,32 @@ class SessionApi (
         }
     }
 
-    @GetMapping("/tutor/")
-    fun getTutorSessions(
-        @RequestParam("tutorKcId") tutorKcId: String,
-        @RequestParam("attendance", required = false, defaultValue = "all") attendance: String? = ""
+    @GetMapping("/student/")
+    fun getStudentSessions(
+        @RequestParam("studentKcId") studentKcId: String,
+        @RequestParam("attendance", required = false, defaultValue = "all") attendance: String? = "all",
+        @RequestParam("date", required = false) date: String? = null
     ): ResponseEntity<ResponseDto<List<VisitSessionDto>>> {
         if (attendance != "attended" && attendance != "not-attended" && attendance != "pending" && attendance != "all") {
             return ResponseEntity.badRequest().body(ResponseDto(null, "Invalid attendance filter", false))
         }
-        val tutorSessions = visitSessionBl.findSessionsByTutorId(tutorKcId, attendance)
+        val studentSessions = visitSessionBl.findSessionsByStudentId(studentKcId, attendance,date)
+        if (studentSessions.isEmpty()) {
+            return ResponseEntity.ok(ResponseDto(studentSessions, "No sessions found", true))
+        }
+        return ResponseEntity.ok(ResponseDto(studentSessions, "Student sessions found", true))
+    }
+
+    @GetMapping("/tutor/")
+    fun getTutorSessions(
+        @RequestParam("tutorKcId") tutorKcId: String,
+        @RequestParam("attendance", required = false, defaultValue = "all") attendance: String? = "all",
+        @RequestParam("date", required = false) date: String? = null
+    ): ResponseEntity<ResponseDto<List<VisitSessionDto>>> {
+        if (attendance != "attended" && attendance != "not-attended" && attendance != "pending" && attendance != "all") {
+            return ResponseEntity.badRequest().body(ResponseDto(null, "Invalid attendance filter", false))
+        }
+        val tutorSessions = visitSessionBl.findSessionsByTutorId(tutorKcId, attendance,date)
         if (tutorSessions.isEmpty()) {
             return ResponseEntity.ok(ResponseDto(tutorSessions, "No sessions found", true))
         }

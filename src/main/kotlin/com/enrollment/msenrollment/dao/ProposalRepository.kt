@@ -7,5 +7,10 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ProposalRepository : JpaRepository<Proposal, Long>{
 
-    fun findByPersonIdKc(studentKcId: String): Proposal
-}
+    fun findAllByPersonIdKc(studentKcId: String): List<Proposal>
+
+    fun findByPersonIdKcAndProposalId(studentKcId: String, proposalId: Long): Proposal
+
+    fun existsByPersonIdKc(studentKcId: String): Boolean
+
+    }

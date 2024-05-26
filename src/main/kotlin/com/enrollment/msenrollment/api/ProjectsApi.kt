@@ -33,6 +33,8 @@ class ProjectsApi (
         return ResponseEntity.ok(ResponseDto(null, "Proposal rejected", true))
     }
 
+
+
     @GetMapping("/proposals")
     fun getProposals(): ResponseEntity<ResponseDto<List<ProposalOutDto>>> {
         val proposals = projectBl.findProposals()
@@ -41,15 +43,16 @@ class ProjectsApi (
     }
 
     @GetMapping("/proposals/{studentKcId}")
-    fun getProposalByStudentKcId(@PathVariable studentKcId: String): ResponseEntity<ResponseDto<ProposalOutDto>> {
+    fun getProposalByStudentKcId(@PathVariable studentKcId: String):
+            ResponseEntity<ResponseDto<List<ProposalOutDto>>> {
         val proposal = projectBl.findProposalByStudentKcId(studentKcId)
         return ResponseEntity.ok(ResponseDto(proposal, "Proposal retrieved", true))
     }
 
-    @GetMapping("/proposals/{studentKcId}/details")
-    fun getProposalDetailByStudentKcId(@PathVariable studentKcId: String):
+    @GetMapping("/proposals/{proposalId}/{studentKcId}/details")
+    fun getProposalDetailByStudentKcId(@PathVariable studentKcId: String, @PathVariable proposalId: Long):
             ResponseEntity<ResponseDto<ProposalDetailDto>> {
-        val proposal = projectBl.findProposalDetailByStudentKcId(studentKcId)
+        val proposal = projectBl.findProposalDetailByStudentKcId(studentKcId, proposalId)
         return ResponseEntity.ok(ResponseDto(proposal, "Proposal retrieved", true))
     }
 
