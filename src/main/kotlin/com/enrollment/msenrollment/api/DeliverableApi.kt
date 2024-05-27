@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,9 +20,10 @@ class DeliverableApi (
     @Autowired private val deliverableBl: DeliverableBl
 ){
 
-    @PostMapping("/")
-    fun createDeliverable(@RequestBody deliverableDto: DeliverableDto): ResponseEntity<ResponseDto<String>> {
-        deliverableBl.saveDeliverable(deliverableDto)
+    @PostMapping("/{fileId}")
+    fun createDeliverable(@RequestBody deliverableDto: DeliverableDto,
+                          @PathVariable fileId: Long): ResponseEntity<ResponseDto<String>> {
+        deliverableBl.saveDeliverable(deliverableDto,fileId)
         return ResponseEntity.ok(ResponseDto(null,
                 "Deliverable created successfully",
                 true))
