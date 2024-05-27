@@ -30,5 +30,6 @@ class Project(
     @JoinColumn(name = "id_asignacion")
     var assignationId: Assignation? = assignationId
 
-
+    @Column(name = "finalizado")
+    var isFinished: Boolean = false
 }
