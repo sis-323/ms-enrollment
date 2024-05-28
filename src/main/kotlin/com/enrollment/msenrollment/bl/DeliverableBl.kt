@@ -67,7 +67,7 @@ class DeliverableBl (
                 deliverableId = it.deliverableId,
                 title = it.title!!,
                 dueDate = it.dueDate.toString(),
-                description = it.description!!
+                description = it.description!!,
             ))
         }
         return deliverableDtos
@@ -109,6 +109,26 @@ class DeliverableBl (
         return deliverableDtos
     }
 
+
+    fun findPendingDeliverables(studentKcId: String) : List<DeliverableDto>{
+        val deliverableDtos = mutableListOf<DeliverableDto>()
+        val assignation = assignationRepository.findByStudentIdIdKc(studentKcId)
+        val project = projectRepository.findByAssignationId(assignation)
+        val deliverables = deliverableFileRepository.findAllByFinalProjectId(project)
+        deliverables.forEach {
+            deliverableDtos.add(DeliverableDto(
+                deliverableId = it.deliverableId?.deliverableId,
+                title = it.deliverableId?.title!!,
+                dueDate = it.deliverableId?.dueDate.toString(),
+                description = it.deliverableId?.description!!,
+                fileUrl = fileService.getFileUrl(it.fileId?.fileName!!).body?.data
+
+            ))
+
+        }
+
+        return deliverableDtos
+    }
 //    fun saveStudentDeliverable(MultipartFile file, Long deliverableId, String studentKcId) {
 //        val deliverable = deliverableRepository.findByDeliverableId(deliverableId)
 //        val assignation = assignationRepository.findByStudentIdIdKc(studentKcId)
