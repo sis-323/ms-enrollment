@@ -31,8 +31,5 @@ class Project(
     var assignationId: Assignation? = assignationId
 
     @Column(name = "finalizado")
-    var finished: Boolean = false
-
-
-
+    var isFinished: Boolean = false
 }

@@ -1,21 +1,19 @@
 package com.enrollment.msenrollment.api
 
 import com.enrollment.msenrollment.bl.ProjectBl
+
+import com.enrollment.msenrollment.dto.*
+import com.enrollment.msenrollment.entity.SearchProject
+
 import com.enrollment.msenrollment.dto.ModalityDto
 import com.enrollment.msenrollment.dto.ObservationDto
 import com.enrollment.msenrollment.dto.ProposalDetailDto
 import com.enrollment.msenrollment.dto.ProposalOutDto
 import com.enrollment.msenrollment.exception.StudentNotAssignedException
+
 import com.files.msfiles.dto.ResponseDto
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/projects")
@@ -77,5 +75,22 @@ class ProjectsApi (
         return ResponseEntity.ok(ResponseDto(modalities, "Modalities retrieved", true))
     }
 
+    @GetMapping("/final")
+    fun getFinalProjects(): ResponseEntity<ResponseDto<List<SearchProjectResponseDto>>> {
+        val projects = projectBl.findFinalProjects();
+        return ResponseEntity.ok(ResponseDto(projects, "Projects retrieved", true))
+    }
+
+    @GetMapping("/pending")
+    fun getPendingProjects(): ResponseEntity<ResponseDto<List<SearchProjectResponseDto>>> {
+        val projects = projectBl.findPendingProjects();
+        return ResponseEntity.ok(ResponseDto(projects, "Projects retrieved", true))
+    }
+
+    @GetMapping("/search")
+    fun searchProposals(@RequestParam("keywords") keywords: String): ResponseEntity<ResponseDto<List<SearchProjectResponseDto>>> {
+        val projects = projectBl.searchProjects(keywords);
+        return ResponseEntity.ok(ResponseDto(projects, "Projects retrieved", true))
+    }
 
 }
