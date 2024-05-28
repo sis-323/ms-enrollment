@@ -92,9 +92,8 @@ class DeliverableBl (
 
     }
 
-    fun findDeliverablesByStudentKcId(studentKcId: String): List<DeliverableDto> {
-        val assignation = assignationRepository.findByStudentIdIdKc(studentKcId)
-        val studentDeliverables = studentDeliverableRepository.findByAssignation(assignation)
+    fun findDeliverablesByStudentKcId( projectId: Long): List<DeliverableDto> {
+        val studentDeliverables = studentDeliverableRepository.findByProjectId(projectId)
         val deliverableDtos = mutableListOf<DeliverableDto>()
         studentDeliverables.forEach {
             deliverableDtos.add(DeliverableDto(
