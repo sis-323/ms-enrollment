@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository
 interface DeliverableFileRepository : JpaRepository<DeliverableFile, Long> {
 
     fun findAllByFinalProjectId(finalProjectId: Project): List<DeliverableFile>
+
 }

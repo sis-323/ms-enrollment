@@ -92,8 +92,26 @@ class DeliverableBl (
 
     }
 
-    fun findDeliverablesByStudentKcId( projectId: Long): List<DeliverableDto> {
+    fun findDeliverablesByProjectId( projectId: Long): List<DeliverableDto> {
         val studentDeliverables = studentDeliverableRepository.findByProjectId(projectId)
+        val deliverableDtos = mutableListOf<DeliverableDto>()
+        studentDeliverables.forEach {
+            deliverableDtos.add(DeliverableDto(
+                deliverableId = it.deliverable?.deliverableId,
+                title = it.deliverable?.title!!,
+                dueDate = it.deliverable?.dueDate.toString(),
+                description = it.deliverable?.description!!,
+                fileUrl = fileService.getFileUrl(it.file?.file?.fileName!!).body?.data,
+                status = it.status
+
+            ))
+        }
+        return deliverableDtos
+    }
+
+    fun findDeliverablesByStudentId( idKc: String): List<DeliverableDto> {
+        val assignation = assignationRepository.findByStudentIdIdKc(idKc)
+        val studentDeliverables = studentDeliverableRepository.findByAssignation(assignation)
         val deliverableDtos = mutableListOf<DeliverableDto>()
         studentDeliverables.forEach {
             deliverableDtos.add(DeliverableDto(

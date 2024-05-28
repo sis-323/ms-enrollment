@@ -50,7 +50,7 @@ class DeliverableApi (
     @GetMapping("/{projectId}/student/deliverables")
     fun getStudentDeliverables(@PathVariable projectId:Long): ResponseEntity<ResponseDto<List<DeliverableDto>>>
     {
-        val deliverables = deliverableBl.findDeliverablesByStudentKcId( projectId)
+        val deliverables = deliverableBl.findDeliverablesByProjectId( projectId)
         return ResponseEntity.ok(ResponseDto(deliverables, "Deliverables retrieved", true))
     }
     @GetMapping("/pending/")
@@ -60,7 +60,11 @@ class DeliverableApi (
             return ResponseEntity.ok(ResponseDto(deliverables, "Deliverables retrieved", true))
         }
 
-
-
+    @GetMapping("/student/{kcId}/deliverables")
+    fun getStudentDeliverables(@PathVariable kcId: String): ResponseEntity<ResponseDto<List<DeliverableDto>>>
+    {
+        val deliverables = deliverableBl.findDeliverablesByStudentId(kcId)
+        return ResponseEntity.ok(ResponseDto(deliverables, "Deliverables retrieved", true))
+    }
 
 }
