@@ -92,6 +92,24 @@ class DeliverableBl (
 
     }
 
+    fun findDeliverablesByStudentKcId(studentKcId: String): List<DeliverableDto> {
+        val assignation = assignationRepository.findByStudentIdIdKc(studentKcId)
+        val studentDeliverables = studentDeliverableRepository.findByAssignation(assignation)
+        val deliverableDtos = mutableListOf<DeliverableDto>()
+        studentDeliverables.forEach {
+            deliverableDtos.add(DeliverableDto(
+                deliverableId = it.deliverable?.deliverableId,
+                title = it.deliverable?.title!!,
+                dueDate = it.deliverable?.dueDate.toString(),
+                description = it.deliverable?.description!!,
+                fileUrl = fileService.getFileUrl(it.file?.file?.fileName!!).body?.data,
+                status = it.status
+
+            ))
+        }
+        return deliverableDtos
+    }
+
 //    fun saveStudentDeliverable(MultipartFile file, Long deliverableId, String studentKcId) {
 //        val deliverable = deliverableRepository.findByDeliverableId(deliverableId)
 //        val assignation = assignationRepository.findByStudentIdIdKc(studentKcId)

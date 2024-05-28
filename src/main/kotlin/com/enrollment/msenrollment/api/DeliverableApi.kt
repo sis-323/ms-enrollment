@@ -47,4 +47,11 @@ class DeliverableApi (
                 true))
     }
 
+    @GetMapping("/student/{studentKcId}/deliverables")
+    fun getStudentDeliverables(@PathVariable studentKcId: String): ResponseEntity<ResponseDto<List<DeliverableDto>>>
+    {
+        val deliverables = deliverableBl.findDeliverablesByStudentKcId(studentKcId)
+        return ResponseEntity.ok(ResponseDto(deliverables, "Deliverables retrieved", true))
+    }
+
 }
