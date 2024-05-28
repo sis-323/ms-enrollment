@@ -4,7 +4,11 @@ import com.enrollment.msenrollment.dao.*
 import com.enrollment.msenrollment.dto.*
 import com.enrollment.msenrollment.entity.Observation
 import com.enrollment.msenrollment.entity.Project
+
 import com.enrollment.msenrollment.entity.SearchProject
+
+import com.enrollment.msenrollment.exception.StudentNotAssignedException
+
 import com.enrollment.msenrollment.service.FileService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,10 +34,17 @@ class ProjectBl(
     }
 
     fun approveProposal(proposalId: Long) {
-        logger.info("Approving proposal: $proposalId")
+        logger.info("Starting bl to approve proposal: $proposalId")
         val proposal = proposalRepository.findById(proposalId).get()
         val enrollment = enrollmentRepository.findByProposalId(proposal)
+        val assignationExists = assignationRepository.existsByStudentId(proposal.person!!)
+        if (!assignationExists) {
+            logger.error("Student not assigned to any relator or tutor")
+            throw StudentNotAssignedException("El estudiante no está asignado a ningún relator ni tutor")
+        }
+
         val assignation = assignationRepository.findByStudentId(proposal.person!!)
+
         logger.info("Assignation: ${assignation.assignationId}")
         enrollment.proposalStatus = "Aprobado"
         enrollmentRepository.save(enrollment)

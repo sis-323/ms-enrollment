@@ -1,6 +1,7 @@
 package com.enrollment.msenrollment.entity
 
 import jakarta.persistence.*
+import java.util.*
 
 @Entity
 @Table(name = "entregable_estudiante")
@@ -12,7 +13,7 @@ class StudentDeliverable {
 
     @ManyToOne
     @JoinColumn(name = "id_archivo_entregable")
-    var file: File? = null
+    var file: StudentDeliverableFile? = null
 
     @ManyToOne
     @JoinColumn(name = "id_cronograma")
@@ -22,11 +23,20 @@ class StudentDeliverable {
     @JoinColumn(name = "id_asignacion")
     var assignation: Assignation? = null
 
+    @Column(name = "estado")
+    var status: String? = null
 
-    constructor(file: File?, deliverable: Deliverable?, assignation: Assignation?) {
+    @Column(name = "fecha")
+    var date: Date = Date()
+
+
+    constructor(file: StudentDeliverableFile?, deliverable: Deliverable?, assignation: Assignation?,
+        status: String? = null)
+    {
         this.file = file
         this.deliverable = deliverable
         this.assignation = assignation
+        this.status = status
     }
 
 }

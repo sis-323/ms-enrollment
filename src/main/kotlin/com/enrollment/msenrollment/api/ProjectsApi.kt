@@ -1,8 +1,16 @@
 package com.enrollment.msenrollment.api
 
 import com.enrollment.msenrollment.bl.ProjectBl
+
 import com.enrollment.msenrollment.dto.*
 import com.enrollment.msenrollment.entity.SearchProject
+
+import com.enrollment.msenrollment.dto.ModalityDto
+import com.enrollment.msenrollment.dto.ObservationDto
+import com.enrollment.msenrollment.dto.ProposalDetailDto
+import com.enrollment.msenrollment.dto.ProposalOutDto
+import com.enrollment.msenrollment.exception.StudentNotAssignedException
+
 import com.files.msfiles.dto.ResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -15,8 +23,14 @@ class ProjectsApi (
 
     @PutMapping("/{proposalId}/approve")
     fun approveProposal( @PathVariable proposalId: Long): ResponseEntity<ResponseDto<String>> {
-        projectBl.approveProposal(proposalId)
-        return ResponseEntity.ok(ResponseDto(null, "Proposal approved", true))
+        try {
+            projectBl.approveProposal(proposalId)
+            return ResponseEntity.ok(ResponseDto(null, "Propuesta aprobada",
+                true))
+        }
+        catch (e: StudentNotAssignedException) {
+            return ResponseEntity.badRequest().body(ResponseDto(null, e.message!!, false))
+        }
     }
 
     @PutMapping("/{proposalId}/reject")

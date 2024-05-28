@@ -6,12 +6,16 @@ import com.files.msfiles.dto.ResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/sessions")
 class SessionApi (
     @Autowired private val visitSessionBl: VisitSessionBl
 ) {
+    companion object{
+        private val logger = org.slf4j.LoggerFactory.getLogger(SessionApi::class.java)
+    }
 
     @PostMapping("/")
     fun createSession(@RequestParam("studentKcId") studentKcId: String,
@@ -21,6 +25,7 @@ class SessionApi (
             return ResponseEntity.ok(ResponseDto(null, "Session created", true))
         }
         catch (e: Exception) {
+            logger.error("Error creating session: ${e.message}")
             return ResponseEntity.internalServerError().body(ResponseDto(null, e.message!!, false))
         }
     }
@@ -44,13 +49,13 @@ class SessionApi (
     @GetMapping("/tutor/")
     fun getTutorSessions(
         @RequestParam("tutorKcId") tutorKcId: String,
-        @RequestParam("attendance", required = false, defaultValue = "all") attendance: String? = "all",
-        @RequestParam("date", required = false) date: String? = null
+        @RequestParam("attendance", required = false, defaultValue = "all") attendance: String? = "all"
+
     ): ResponseEntity<ResponseDto<List<VisitSessionDto>>> {
         if (attendance != "attended" && attendance != "not-attended" && attendance != "pending" && attendance != "all") {
             return ResponseEntity.badRequest().body(ResponseDto(null, "Invalid attendance filter", false))
         }
-        val tutorSessions = visitSessionBl.findSessionsByTutorId(tutorKcId, attendance,date)
+        val tutorSessions = visitSessionBl.findSessionsByTutorId(tutorKcId, attendance)
         if (tutorSessions.isEmpty()) {
             return ResponseEntity.ok(ResponseDto(tutorSessions, "No sessions found", true))
         }

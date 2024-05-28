@@ -33,4 +33,6 @@ class Enrollment(
 
     @Column(name = "estado")
     var status: Boolean = true
+
+
 }

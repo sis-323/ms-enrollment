@@ -24,17 +24,21 @@ class VisitSessionBl constructor(
     }
 
     fun saveVisitSession(visitSessionDto: VisitSessionDto, studentKcId: String) {
-        logger.info("Saving visit session")
         val assignationExists = assignationBl.verifyAssignation(studentKcId)
         if (assignationExists) {
             val assignation = assignationBl.findAssignationByStudentId(studentKcId) as Assignation
+            logger.info("Assignation found: ${assignation.assignationId }")
             logger.info("Saving visit session for student with keycloak id: $studentKcId")
             val visitSession = VisitSession(
-                date = toDate(visitSessionDto.visitDate),
-                observation = visitSessionDto.observation,
+                date = visitSessionDto.visitDate!!,
+                observation = null,
                 assignation = assignation,
                 studentAssisted = null,
                 status = true,
+                hour = visitSessionDto.hour!!,
+                platform = visitSessionDto.platform!!,
+                link = visitSessionDto.link!!,
+                performedAction = visitSessionDto.performedAction!!
 
                 )
             visitSessionRepository.save(visitSession)
@@ -47,7 +51,7 @@ class VisitSessionBl constructor(
 
     }
 
-    fun findSessionsByTutorId(tutorKcId: String, attendance: String, date: String?): List<VisitSessionDto> {
+    fun findSessionsByTutorId(tutorKcId: String, attendance: String): List<VisitSessionDto> {
         logger.info("Finding sessions by tutor kc id: $tutorKcId")
 
         val sessions = visitSessionRepository.findAllByAssignationTutorIdIdKc(tutorKcId)
@@ -62,27 +66,18 @@ class VisitSessionBl constructor(
             }
         }
 
-        if (!date.isNullOrEmpty()) {
-            logger.info("Filtering sessions by date: $date")
 
-            // Eliminar BOT 2024 utilizando una expresión regular para obtener la fecha correcta
-            val datePattern = Regex("""\w+ \w+ \d{2} \d{2}:\d{2}:\d{2}""")
-            val matchResult = datePattern.find(date)
-            val formattedDate = matchResult?.value ?: date
-            // Convertir la fecha filtrada al formato correcto
-            logger.info("Formatted date: ${toDate(date)}")
-            filteredSessions.filter { it.date == toDate(date)
-            }
-
-
-    }
         return filteredSessions.map {
             logger.info("Session date: ${it.date.toString()}")
             VisitSessionDto(
                 visitSessionId = it.id!!,
-                visitDate = SimpleDateFormat("yyyy-MM-dd").format(it.date),
+                visitDate = it.date,
                 observation = it.observation,
                 didStudentAttend = it.studentAssisted,
+                hour = it.hour,
+                platform = it.platform,
+                link = it.link,
+                performedAction = it.performedAction
             )
         }}
 
@@ -108,9 +103,13 @@ class VisitSessionBl constructor(
         return filteredSessions.map {
             VisitSessionDto(
                 visitSessionId = it.id!!,
-                visitDate = SimpleDateFormat("yyyy-MM-dd").format(it.date),
+                visitDate = it.date,
                 observation = it.observation,
                 didStudentAttend = it.studentAssisted,
+                hour = it.hour,
+                platform = it.platform,
+                link = it.link,
+                performedAction = it.performedAction
             )
         }
     }
@@ -121,9 +120,13 @@ class VisitSessionBl constructor(
 
         return VisitSessionDto(
             visitSessionId = session.id!!,
-            visitDate = SimpleDateFormat("yyyy-MM-dd").format(session.date),
+            visitDate = session.date,
             observation = session.observation,
             didStudentAttend = session.studentAssisted,
+            hour = session.hour,
+            platform = session.platform,
+            link = session.link,
+            performedAction = session.performedAction
         )
     }
 
