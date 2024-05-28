@@ -4,6 +4,7 @@ import com.enrollment.msenrollment.dao.*
 import com.enrollment.msenrollment.dto.*
 import com.enrollment.msenrollment.entity.Observation
 import com.enrollment.msenrollment.entity.Project
+import com.enrollment.msenrollment.entity.SearchProject
 import com.enrollment.msenrollment.service.FileService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +21,8 @@ class ProjectBl(
     @Autowired private val fileRepository: FileRepository,
     @Autowired private val modalityRepository: ModalityRepository,
     @Autowired private val requirementRepository: RequirementRepository,
-    @Autowired private val observationRepository: ObservationRepository
+    @Autowired private val observationRepository: ObservationRepository,
+    @Autowired private val searchProjectRepository : SearchProjectRepository
 ) {
 
     companion object{
@@ -156,4 +158,61 @@ class ProjectBl(
         }
     }
 
+    fun findFinalProjects(): List<SearchProjectResponseDto> {
+        val projects = projectRepository.findAll()
+        return projects.map {
+            SearchProjectResponseDto(
+                idProyectoFinal = it.projectId!!,
+                titulo = it.name,
+//                autor = it.assignationId!!.studentId!!.person!!.name + " " + it.assignationId!!.studentId!!.person!!.lastName,
+                autor = "MOCK AUTHOR, CHANGE ms-enrollment/ProjectBl/167",
+                estado = it.status,
+                fecha = it.year,
+//                tipo = it.assignationId!!.studentId!!.person!!.modality!!.modality
+                tipo = "MOCK MODALITY, CHANGE ms-enrollment/ProjectBl/168"
+            )
+        }
+    }
+
+    fun searchProjects(term: String): List<SearchProjectResponseDto> {
+
+        logger.info("Searching projects with term: $term")
+
+        val queriedProjects = searchProjectRepository.searchProjects(term)
+        // map to SearchProjectResponseDto
+        var searchProjectResponseDto : List<SearchProjectResponseDto> = emptyList()
+        for (project in queriedProjects) {
+            // get author
+//            val author = proposalRepository.findById(project.idProyectoFinal!!).get().person!!
+//            val modality = author.modality!!.modality
+            searchProjectResponseDto += SearchProjectResponseDto(
+                idProyectoFinal = project.idProyectoFinal!!,
+                titulo = project.titulo,
+                autor  = "MOCK AUTHOR, CHANGE ms-enrollment/ProjectBl/186",
+//                autor = author.name + " " + author.lastName + " " + author.motherLastName,
+                estado = project.estado,
+                fecha = project.year,
+                tipo = "MOCK MODALITY, CHANGE ms-enrollment/ProjectBl/187"
+//                tipo = modality
+            )
+        }
+        return searchProjectResponseDto;
+    }
+
+
+    fun findPendingProjects(): List<SearchProjectResponseDto> {
+        val projects = projectRepository.findAllByStatusFalse()
+        return projects.map {
+            SearchProjectResponseDto(
+                idProyectoFinal = it.projectId!!,
+                titulo = it.name,
+//                autor = it.assignationId!!.studentId!!.person!!.name + " " + it.assignationId!!.studentId!!.person!!.lastName,
+                autor = "MOCK AUTHOR, CHANGE ms-enrollment/ProjectBl/206",
+                estado = it.status,
+                fecha = it.year,
+//                tipo = it.assignationId!!.studentId!!.person!!.modality!!.modality
+                tipo = "MOCK MODALITY, CHANGE ms-enrollment/ProjectBl/207"
+            )
+        }
+    }
 }
