@@ -1,9 +1,7 @@
 package com.enrollment.msenrollment.bl
 
 import com.enrollment.msenrollment.dao.*
-import com.enrollment.msenrollment.entity.Enrollment
-import com.enrollment.msenrollment.entity.Proposal
-import com.enrollment.msenrollment.entity.StudentRequirement
+import com.enrollment.msenrollment.entity.*
 import com.enrollment.msenrollment.service.EmailService
 import com.files.msfiles.dto.FileDto
 import com.files.msfiles.dto.ProposalDto
@@ -74,6 +72,8 @@ class EnrollmentBl constructor(
         sendEmail("proposal", proposalDto.personKcUuid)
 
     }
+
+
 
     fun sendEmail(type: String, userKcUUid: String){
         emailService.sendEmail(userKcUUid, type)

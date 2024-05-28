@@ -5,7 +5,9 @@ import com.enrollment.msenrollment.dto.DeliverableDto
 import com.enrollment.msenrollment.entity.Deliverable
 import com.enrollment.msenrollment.entity.DeliverableFile
 import com.enrollment.msenrollment.entity.StudentDeliverable
+import com.enrollment.msenrollment.entity.StudentDeliverableFile
 import com.enrollment.msenrollment.service.FileService
+import com.files.msfiles.dto.FileDto
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +22,9 @@ class DeliverableBl (
     @Autowired private val fileService: FileService,
     @Autowired private val fileRepository: FileRepository,
     @Autowired private val assignationRepository: AssignationRepository,
-    @Autowired private val projectRepository: ProjectRepository
+    @Autowired private val projectRepository: ProjectRepository,
+    private var studentDeliverableFileRepository: StudentDeliverableFileRepository,
+    private var studentDeliverableRepository: StudentDeliverableRepository
 ) {
     companion object{
         val logger: Logger = LoggerFactory.getLogger(DeliverableBl::class.java)
@@ -67,6 +71,25 @@ class DeliverableBl (
             ))
         }
         return deliverableDtos
+    }
+
+    fun saveStudentDeliverable(file: FileDto, studentKcId: String, deliverableId: Long){
+        val assignation = assignationRepository.findByStudentIdIdKc(studentKcId)
+        val deliverable = deliverableRepository.findById(deliverableId).get()
+        logger.info("Looking for file with id: ${file.fileId}")
+        val studentFileDeliverable = StudentDeliverableFile(
+            file = fileRepository.findById(file.fileId!!).get())
+        studentDeliverableFileRepository.save(studentFileDeliverable)
+
+        val studentDeliverable = StudentDeliverable(
+            deliverable = deliverable,
+            assignation = assignation,
+            file = studentFileDeliverable,
+            status = "Pendiente"
+        )
+        studentDeliverableRepository.save(studentDeliverable)
+
+
     }
 
 //    fun saveStudentDeliverable(MultipartFile file, Long deliverableId, String studentKcId) {

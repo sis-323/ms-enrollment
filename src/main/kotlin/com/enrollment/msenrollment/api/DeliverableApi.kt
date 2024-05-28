@@ -2,6 +2,7 @@ package com.enrollment.msenrollment.api
 
 import com.enrollment.msenrollment.bl.DeliverableBl
 import com.enrollment.msenrollment.dto.DeliverableDto
+import com.files.msfiles.dto.FileDto
 import com.files.msfiles.dto.ResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -36,5 +37,14 @@ class DeliverableApi (
         return ResponseEntity.ok(ResponseDto(deliverables, "Deliverables retrieved", true))
     }
 
+    @PostMapping("/student/{studentKcId}/deliverable/{deliverableId}")
+    fun uploadStudentDeliverable(@PathVariable studentKcId: String,
+                                 @PathVariable deliverableId: Long,
+                                 @RequestBody fileDto: FileDto):ResponseEntity<ResponseDto<String>> {
+        deliverableBl.saveStudentDeliverable(fileDto,studentKcId, deliverableId)
+        return ResponseEntity.ok(ResponseDto(null,
+                "Deliverable uploaded successfully",
+                true))
+    }
 
 }
