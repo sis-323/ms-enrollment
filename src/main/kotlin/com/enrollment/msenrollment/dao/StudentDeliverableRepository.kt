@@ -1,6 +1,7 @@
 package com.enrollment.msenrollment.dao
 
 import com.enrollment.msenrollment.entity.Assignation
+import com.enrollment.msenrollment.entity.Deliverable
 import com.enrollment.msenrollment.entity.StudentDeliverable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -13,4 +14,8 @@ interface StudentDeliverableRepository: JpaRepository<StudentDeliverable, Long>{
 
         @Query("SELECT sd FROM StudentDeliverable sd WHERE sd.assignation = (SELECT p.assignationId FROM Project p WHERE p.projectId = :projectId)")
     fun findByProjectId(projectId: Long): List<StudentDeliverable>
+
+    fun findByDeliverable(deliverable: Deliverable): StudentDeliverable
+
+    fun existsByDeliverable(deliverable: Deliverable): Boolean
 }
