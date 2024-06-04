@@ -85,8 +85,9 @@ class DeliverableBl (
             deliverable = deliverable,
             assignation = assignation,
             file = studentFileDeliverable,
-            status = "Pendiente"
+            status = "Entregado"
         )
+
         studentDeliverableRepository.save(studentDeliverable)
 
 
@@ -139,7 +140,13 @@ class DeliverableBl (
                 title = it.deliverableId?.title!!,
                 dueDate = it.deliverableId?.dueDate.toString(),
                 description = it.deliverableId?.description!!,
-                fileUrl = fileService.getFileUrl(it.fileId?.fileName!!).body?.data
+                fileUrl = fileService.getFileUrl(it.fileId?.fileName!!).body?.data,
+                status =
+                    if(studentDeliverableRepository.existsByDeliverable(it.deliverableId!!))
+                        studentDeliverableRepository.findByDeliverable(it.deliverableId!!).status
+                    else "Pendiente"
+
+
 
             ))
 

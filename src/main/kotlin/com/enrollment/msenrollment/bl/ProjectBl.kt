@@ -3,6 +3,7 @@ package com.enrollment.msenrollment.bl
 import com.enrollment.msenrollment.dao.*
 import com.enrollment.msenrollment.dto.*
 import com.enrollment.msenrollment.entity.Observation
+import com.enrollment.msenrollment.entity.Person
 import com.enrollment.msenrollment.entity.Project
 
 import com.enrollment.msenrollment.entity.SearchProject
@@ -26,7 +27,8 @@ class ProjectBl(
     @Autowired private val modalityRepository: ModalityRepository,
     @Autowired private val requirementRepository: RequirementRepository,
     @Autowired private val observationRepository: ObservationRepository,
-    @Autowired private val searchProjectRepository : SearchProjectRepository
+    @Autowired private val searchProjectRepository : SearchProjectRepository,
+    @Autowired private val userRepository: PersonRepository
 ) {
 
     companion object{
@@ -72,16 +74,20 @@ class ProjectBl(
     }
 
     fun reviewProposal(studentKcId: String, proposalId: Long, observationDto: ObservationDto) {
+        val professor = userRepository.findProfessor()
         logger.info("Observing proposal: $proposalId for student: $studentKcId")
         val proposal = proposalRepository.findByPersonIdKcAndProposalId(studentKcId, proposalId)
         val enrollment = enrollmentRepository.findByProposalId(proposal)
         val observation = Observation(
             description = observationDto.description,
             date = Date(),
+            uploadedBy = professor.name + " " + professor.lastName
+
         )
         val savedObservation = observationRepository.save(observation)
         enrollment.observation = savedObservation
         enrollment.proposalStatus = "Observado"
+
         enrollmentRepository.save(enrollment)
 
     }
