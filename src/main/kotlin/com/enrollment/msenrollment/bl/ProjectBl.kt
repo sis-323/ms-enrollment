@@ -53,7 +53,6 @@ class ProjectBl(
 
         val project = Project(
             name = proposal.description!!,
-            description = proposal.description!!,
             assignationId = assignation,
         )
         logger.info("Saving project: ${project.name}")
