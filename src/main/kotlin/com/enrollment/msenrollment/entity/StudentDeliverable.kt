@@ -23,6 +23,10 @@ class StudentDeliverable {
     @JoinColumn(name = "id_asignacion")
     var assignation: Assignation? = null
 
+    @ManyToOne
+    @JoinColumn(name = "id_proyecto_final")
+    var finalProject: Project? = null
+
     @Column(name = "estado")
     var status: String? = null
 
@@ -31,12 +35,13 @@ class StudentDeliverable {
 
 
     constructor(file: StudentDeliverableFile?, deliverable: Deliverable?, assignation: Assignation?,
-        status: String? = null)
+        status: String? = null, finalProject: Project? = null)
     {
         this.file = file
         this.deliverable = deliverable
         this.assignation = assignation
         this.status = status
+        this.finalProject = finalProject
     }
 
 }
