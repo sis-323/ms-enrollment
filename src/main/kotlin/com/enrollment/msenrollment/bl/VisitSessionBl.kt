@@ -94,12 +94,7 @@ class VisitSessionBl constructor(
                 throw Exception("Invalid attendance filter")
             }
         }
-
-        if (!date.isNullOrEmpty()) {
-            logger.info("Filtering sessions by date: $date")
-            filteredSessions.filter { it.date == toDate(date) }
-        }
-
+        
         return filteredSessions.map {
             VisitSessionDto(
                 visitSessionId = it.id!!,
