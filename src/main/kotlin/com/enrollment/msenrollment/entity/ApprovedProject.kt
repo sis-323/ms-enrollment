@@ -18,4 +18,11 @@ class ApprovedProject(
     @Column(name = "id_proyecto_aprobado")
     var id: Long? = null
 
+    @ManyToMany
+    @JoinTable(
+        name = "materias_proyectos_finales",
+        joinColumns = [JoinColumn(name = "id_proyecto_aprobado")],
+        inverseJoinColumns = [JoinColumn(name = "id_materia_biblioteca")]
+    )
+    var categories: Set<LibraryCategory>? = setOf()
 }
