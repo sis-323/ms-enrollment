@@ -7,7 +7,6 @@ import java.time.LocalDate
 @Table(name = "proyectos_finales")
 class Project(
     @Column(name = "titulo") var name: String,
-    @Column(name = "resumen") var description: String,
     assignationId: Assignation
 ) {
 
@@ -23,8 +22,6 @@ class Project(
     @Column(name = "year")
     var year: String = LocalDate.now().year.toString()
 
-    @Column(name = "materia")
-    var subject: Long = 1
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_asignacion")
