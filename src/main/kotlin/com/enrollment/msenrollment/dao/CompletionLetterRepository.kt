@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface CompletionLetterRepository : JpaRepository<CompletionLetter, Long>{
 
     fun existsByFinalProjectIdProjectId(finalProjectId: Long): Boolean
+
+    fun findByFinalProjectIdProjectId(finalProjectId: Long): CompletionLetter
 }

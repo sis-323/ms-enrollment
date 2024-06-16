@@ -5,9 +5,12 @@ import com.enrollment.msenrollment.dto.CompletionLetterDto
 import com.files.msfiles.dto.ResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -23,6 +26,15 @@ class CompletionLetterApi (
         return ResponseEntity.ok(ResponseDto
             (null, "Completion letter saved successfully", true))
     }
+
+    @PutMapping("/approve/{projectId}/")
+    fun approveCompletionLetter(@RequestParam("kcId") kcId: String,
+                                @PathVariable("projectId") projectId: Long): ResponseEntity<ResponseDto<String>>{
+        completionLetterBl.approveCompletionLetter(projectId, kcId)
+        return ResponseEntity.ok(ResponseDto(null, "Completion letter approved successfully", true))
+
+    }
+
 
 
 }
