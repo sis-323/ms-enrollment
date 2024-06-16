@@ -56,5 +56,22 @@ class CompletionLetterBl (
         logger.info("Completion letter approved")
     }
 
+    fun validateCompletionLetter(projectId: Long): Boolean {
+        logger.info("Validating completion letter")
+        val completionLetterExists = completionLetterRepository.existsByFinalProjectIdProjectId(projectId)
+        if (!completionLetterExists) {
+            logger.info("Completion letter does not exist")
+            return false
+        } else {
+            val completionLetter = completionLetterRepository.findByFinalProjectIdProjectId(projectId)
+            if (completionLetter.approvedByTutor && completionLetter.approvedByRelator) {
+                return true
+            } else {
+                logger.info("Completion letter not approved")
+                return false
+            }
+        }
+    }
+
 
 }

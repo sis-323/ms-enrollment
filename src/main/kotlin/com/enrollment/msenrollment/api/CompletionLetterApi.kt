@@ -5,6 +5,7 @@ import com.enrollment.msenrollment.dto.CompletionLetterDto
 import com.files.msfiles.dto.ResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -35,6 +36,11 @@ class CompletionLetterApi (
 
     }
 
+    @GetMapping("/validate/{projectId}")
+    fun validateCompletionLetter(@PathVariable("projectId") projectId: Long): ResponseEntity<ResponseDto<Boolean>>{
+        val response = completionLetterBl.validateCompletionLetter(projectId)
+        return ResponseEntity.ok(ResponseDto(response, "Completion letter validated successfully", true))
+    }
 
 
 }
