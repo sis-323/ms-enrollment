@@ -160,7 +160,11 @@ class ProjectBl(
             requirements = requirements,
             proposalFile = proposalFile,
             proposalStatus = enrollment.proposalStatus,
-            proposalFileName = proposal.description!!
+            proposalFileName = proposal.description!!,
+            proposalName = proposal.description!!,
+            observation = enrollment.observation?.description!!,
+            observationAuthor = enrollment.observation?.uploadedBy!!
+
         )
     }
 

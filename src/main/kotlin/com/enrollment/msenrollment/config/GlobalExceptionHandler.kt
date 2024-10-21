@@ -19,4 +19,5 @@ class GlobalExceptionHandler {
     fun handleStudentNotAssignedException(e: StudentNotAssignedException): ResponseEntity<ResponseDto<Nothing>> {
         return ResponseEntity(ResponseDto(null, e.message!!, false), HttpStatus.BAD_REQUEST)
     }
+
 }

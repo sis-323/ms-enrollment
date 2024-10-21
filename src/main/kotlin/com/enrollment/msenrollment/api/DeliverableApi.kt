@@ -57,6 +57,9 @@ class DeliverableApi (
         fun getPendingDeliverables(
             @RequestParam("kcId") kcId: String): ResponseEntity<ResponseDto<List<DeliverableDto>>> {
             val deliverables = deliverableBl.findPendingDeliverables(kcId)
+            if (deliverables.isEmpty()) {
+                return ResponseEntity.ok(ResponseDto(deliverables, "No pending deliverables", true))
+            }
             return ResponseEntity.ok(ResponseDto(deliverables, "Deliverables retrieved", true))
         }
 

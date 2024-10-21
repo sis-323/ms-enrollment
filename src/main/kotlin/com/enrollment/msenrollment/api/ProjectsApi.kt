@@ -43,7 +43,7 @@ class ProjectsApi (
                          @RequestBody observationDto: ObservationDto
                          ): ResponseEntity<ResponseDto<String>> {
         projectBl.reviewProposal(studentKcId, proposalId, observationDto)
-        return ResponseEntity.ok(ResponseDto(null, "Proposal observed", true))
+        return ResponseEntity.ok(ResponseDto(null, "Se han actualizado los cambios exitósamente!", true))
     }
 
 

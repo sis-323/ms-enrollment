@@ -74,7 +74,7 @@ class DeliverableBl (
     }
 
     fun saveStudentDeliverable(file: FileDto, studentKcId: String, deliverableId: Long){
-        val assignation = assignationRepository.findByStudentIdIdKc(studentKcId)
+        val assignation = assignationRepository.findByStudentIdIdKc(studentKcId).orElseThrow { throw Exception("Assignation not found") }
         val deliverable = deliverableRepository.findById(deliverableId).get()
         logger.info("Looking for file with id: ${file.fileId}")
         val studentFileDeliverable = StudentDeliverableFile(
@@ -83,6 +83,7 @@ class DeliverableBl (
 
         val studentDeliverable = StudentDeliverable(
             deliverable = deliverable,
+            finalProject = projectRepository.findByAssignationId(assignation).get(),
             assignation = assignation,
             file = studentFileDeliverable,
             status = "Entregado"
@@ -112,7 +113,7 @@ class DeliverableBl (
 
     fun findDeliverablesByStudentId( idKc: String): List<DeliverableDto> {
         val assignation = assignationRepository.findByStudentIdIdKc(idKc)
-        val studentDeliverables = studentDeliverableRepository.findByAssignation(assignation)
+        val studentDeliverables = studentDeliverableRepository.findByAssignation(assignation.get())
         val deliverableDtos = mutableListOf<DeliverableDto>()
         studentDeliverables.forEach {
             deliverableDtos.add(DeliverableDto(
@@ -131,9 +132,15 @@ class DeliverableBl (
 
     fun findPendingDeliverables(studentKcId: String) : List<DeliverableDto>{
         val deliverableDtos = mutableListOf<DeliverableDto>()
-        val assignation = assignationRepository.findByStudentIdIdKc(studentKcId)
-        val project = projectRepository.findByAssignationId(assignation)
+        val assignation = assignationRepository.findByStudentIdIdKc(studentKcId).orElse(null) ?:
+        return deliverableDtos
+
+        val project = projectRepository.findByAssignationId(assignation).orElse(null) ?:
+        return deliverableDtos
         val deliverables = deliverableFileRepository.findAllByFinalProjectId(project)
+        if(deliverables.isEmpty()){
+            return deliverableDtos
+        }
         deliverables.forEach {
             deliverableDtos.add(DeliverableDto(
                 deliverableId = it.deliverableId?.deliverableId,
@@ -145,9 +152,6 @@ class DeliverableBl (
                     if(studentDeliverableRepository.existsByDeliverable(it.deliverableId!!))
                         studentDeliverableRepository.findByDeliverable(it.deliverableId!!).status
                     else "Pendiente"
-
-
-
             ))
 
         }
