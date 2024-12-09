@@ -65,8 +65,12 @@ class ProjectsApi (
     @GetMapping("/proposals/{proposalId}/{studentKcId}/details")
     fun getProposalDetailByStudentKcId(@PathVariable studentKcId: String, @PathVariable proposalId: Long):
             ResponseEntity<ResponseDto<ProposalDetailDto>> {
-        val proposal = projectBl.findProposalDetailByStudentKcId(studentKcId, proposalId)
-        return ResponseEntity.ok(ResponseDto(proposal, "Proposal retrieved", true))
+        try {
+            val proposal = projectBl.findProposalDetailByStudentKcId(studentKcId, proposalId)
+            return ResponseEntity.ok(ResponseDto(proposal, "Proposal retrieved", true))
+        } catch (e: Exception) {
+            return ResponseEntity.badRequest().body(ResponseDto(null, "Error al obtener la propuesta. Error: " + e.message, false))
+        }
     }
 
     @GetMapping("/modalities")

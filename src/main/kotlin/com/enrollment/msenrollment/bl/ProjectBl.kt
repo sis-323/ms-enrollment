@@ -3,10 +3,7 @@ package com.enrollment.msenrollment.bl
 import com.enrollment.msenrollment.dao.*
 import com.enrollment.msenrollment.dto.*
 import com.enrollment.msenrollment.entity.Observation
-import com.enrollment.msenrollment.entity.Person
 import com.enrollment.msenrollment.entity.Project
-
-import com.enrollment.msenrollment.entity.SearchProject
 
 import com.enrollment.msenrollment.exception.StudentNotAssignedException
 
@@ -153,6 +150,7 @@ class ProjectBl(
             throw IllegalStateException("Proposal file ID is null")).get().fileName!!
         ).body!!.data!!
 
+        val observation = enrollment.observation
         return ProposalDetailDto(
             proposalId = proposal.proposalId!!,
             email = user.email,
@@ -162,8 +160,12 @@ class ProjectBl(
             proposalStatus = enrollment.proposalStatus,
             proposalFileName = proposal.description!!,
             proposalName = proposal.description!!,
-            observation = enrollment.observation?.description!!,
-            observationAuthor = enrollment.observation?.uploadedBy!!
+            // if observation is null, set observation and observation author to ""
+            observation =  if(enrollment.observation == null) " " else enrollment.observation?.description!!,
+//            observation = enrollment.observation?.description!!,
+            // if observation is null, set observation and observation author to "", use lambdas
+            observationAuthor = if (enrollment.observation == null) "UCB Degree" else enrollment.observation?.uploadedBy!!
+//            observationAuthor = enrollment.observation?.uploadedBy!!
 
         )
     }

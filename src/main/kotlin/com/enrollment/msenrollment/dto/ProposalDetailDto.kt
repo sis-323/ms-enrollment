@@ -9,8 +9,8 @@ data class ProposalDetailDto (
     val proposalFile: String,
     val proposalStatus: String,
     val proposalFileName: String,
-    val observation: String,
-    val observationAuthor: String
+    val observation: String?,
+    val observationAuthor: String?
 )
 
 data class RequirementDto(
